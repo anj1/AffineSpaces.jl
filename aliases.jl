@@ -1,6 +1,7 @@
 # some useful abstractions and special cases.
 
 # n-dimensional point.
+typealias Point{T,N} AffineSpace{T,N,N}
 Point{T,N}(x0::Vec{N,T}) = AffineSpace(Mat(eye(N)), x0)
 
 # line in 2 dimensions, given by starting point and vector
