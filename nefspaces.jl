@@ -7,6 +7,14 @@ immutable HalfSpace{T,N} <: NefSpace{T,N}
 	closed::Bool # is the set closed or not
 end
 
+# A convex space is an intersection of a set of half-spaces,
+# and is a kind of Nef space.
+type ConvexSpace{T,N} <: NefSpace{T,N}
+	hs::Vector{HalfSpace{T,N}}
+end
+
+# A Nef space can be a complicated logical expression
+# tree involving half spaces.
 type CompositeNefSpace{T,N} <: NefSpace{T,N}
 	oper::Bool  # operation; true:intersect, false:union
 	s1::NefSpace{T,N}
@@ -26,9 +34,11 @@ end
 
 function section(ns::CompositeNefSpace, as::AffineSpace)
 	CompositeNefSpace(ns.oper,
-		              intersect(ns.s1, as),
+	                  intersect(ns.s1, as),
 	                  intersect(ns.s2, as))
 end
+
+section(cs::ConvexSpace, as::AffineSpace) = ConvexSpace([hs -> section(hs, as) for hs in cs.hs])
 
 inter(chs1::NefSpace, chs2::NefSpace) = CompositeNefSpace(true,  chs1, chs2)
 union(chs1::NefSpace, chs2::NefSpace) = CompositeNefSpace(false, chs1, chs2)
@@ -37,3 +47,4 @@ union(chs1::NefSpace, chs2::NefSpace) = CompositeNefSpace(false, chs1, chs2)
 import Base.-
 -(ns::HalfSpace) = HalfSpace(-ns.n,-ns.a,~ns.closed)
 -(ns::CompositeNefSpace) = CompositeNefSpace(~ns.oper, -ns.s1, -ns.s2)
+# - for ConvexSpace does not return a convex space.
