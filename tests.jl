@@ -41,4 +41,13 @@ pln = AffineSpace([0.0,0.0,1.0]',[2.0])
 # preset spaces line Point, Line, Plane, etc.
 # that initialize AffineSpace
 
+# generate three points randomly on xy plane
+# and construct common space (should be xy plane itself)
+pt1 = AffineSpace(eye(3),vcat(randn(2),[0.0]))
+pt2 = AffineSpace(eye(3),vcat(randn(2),[0.0]))
+pt3 = AffineSpace(eye(3),vcat(randn(2),[0.0]))
+pln = generated_space(generated_space(pt1,pt2),pt3)
+@test_approx_eq pln.L Vec([0.0,0.0,1.0])
+@test_approx_eq pln.b Vec([0.0])
+
 println("All tests passed.")

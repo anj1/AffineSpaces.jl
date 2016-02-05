@@ -23,8 +23,5 @@ function generated_space{T,N}(as1::AffineSpace{T,N}, as2::AffineSpace{T,N})
 
 	v = spanning_vec(A,a,B,b)
 	C = nullspace(hcat(nullspace(A),nullspace(B),v)')
-	x = pinv(A)*a
-	c = pinv(C)*x
-
-	AffineSpace(C',c)
+	AffineSpace(C',pinv(C)*pinv(A)*a)
 end
