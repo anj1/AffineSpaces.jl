@@ -2,7 +2,7 @@ module AffineSpaces
 
 using FixedSizeArrays
 
-export AffineSpace, section, inter, union, dist_affine
+export AffineSpace, HalfSpace, Point, Line2D, section, inter, union, dist_affine
 
 # An affine space defined as all x satisfying Tx = b
 # Here, N is the dimension of the 'parent' or 'embedding' space,
