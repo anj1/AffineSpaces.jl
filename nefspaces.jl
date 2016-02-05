@@ -22,7 +22,7 @@ type CompositeNefSpace{T,N} <: NefSpace{T,N}
 end
 
 function section{T,N,M}(hs::HalfSpace{T,N}, as::AffineSpace{T,N,M})
-	n = convert(Matrix, as.T)
+	n = convert(Matrix, as.L)
 	b = convert(Vector, as.b)
 	m = convert(Vector, hs.n)
 
@@ -40,6 +40,7 @@ end
 
 section(cs::ConvexSpace, as::AffineSpace) = ConvexSpace([hs -> section(hs, as) for hs in cs.hs])
 
+import Base.union
 inter(chs1::NefSpace, chs2::NefSpace) = CompositeNefSpace(true,  chs1, chs2)
 union(chs1::NefSpace, chs2::NefSpace) = CompositeNefSpace(false, chs1, chs2)
 
