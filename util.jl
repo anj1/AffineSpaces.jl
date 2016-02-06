@@ -1,5 +1,7 @@
 #vec_space_union(V,W)   = nullspace(hcat(nullspace(V),nullspace(W))')
 #vec_space_union(V,W,U) = nullspace(hcat(nullspace(V),nullspace(W),nullspace(U))')
+
+# vector that 'connects' the space Ax=a to Bx=b
 spanning_vec(A,a,B,b) = pinv(A)*a - pinv(B)*b
 
 # distance between two affine spaces
@@ -22,6 +24,7 @@ function generated_space{T,N}(as1::AffineSpace{T,N}, as2::AffineSpace{T,N})
 	B,b = convert(Array,as2.L),convert(Vector,as2.b)
 
 	v = spanning_vec(A,a,B,b)
+	# combine together v and the solution spaces for Ax=0 and Bx=0
 	C = nullspace(hcat(nullspace(A),nullspace(B),v)')
-	AffineSpace(C',pinv(C)*pinv(A)*a)
+	AffineSpace(C',pinv(C)*pinv(A)*a) # calculate proper offset
 end

@@ -1,7 +1,7 @@
-abstract NefSpace{T,N}
+abstract NefPoly{T,N}
 
 # all x where n.x + a > 0 (or >= 0 if closed=true)
-immutable HalfSpace{T,N} <: NefSpace{T,N}
+immutable HalfSpace{T,N} <: NefPoly{T,N}
 	n::Vec{N,T}  # normal
 	a::T         # offset
 	closed::Bool # is the set closed or not
@@ -9,16 +9,16 @@ end
 
 # A convex space is an intersection of a set of half-spaces,
 # and is a kind of Nef space.
-type ConvexSpace{T,N} <: NefSpace{T,N}
+type ConvexPoly{T,N} <: NefPoly{T,N}
 	hs::Vector{HalfSpace{T,N}}
 end
 
 # A Nef space can be a complicated logical expression
 # tree involving half spaces.
-type CompositeNefSpace{T,N} <: NefSpace{T,N}
+type CompositeNefPoly{T,N} <: NefPoly{T,N}
 	oper::Bool  # operation; true:intersect, false:union
-	s1::NefSpace{T,N}
-	s2::NefSpace{T,N}
+	s1::NefPoly{T,N}
+	s2::NefPoly{T,N}
 end
 
 function section{T,N,M}(hs::HalfSpace{T,N}, as::AffineSpace{T,N,M})
@@ -32,20 +32,20 @@ function section{T,N,M}(hs::HalfSpace{T,N}, as::AffineSpace{T,N,M})
 end
 
 
-function section(ns::CompositeNefSpace, as::AffineSpace)
-	CompositeNefSpace(ns.oper,
+function section(ns::CompositeNefPoly, as::AffineSpace)
+	CompositeNefPoly(ns.oper,
 	                  intersect(ns.s1, as),
 	                  intersect(ns.s2, as))
 end
 
-section(cs::ConvexSpace, as::AffineSpace) = ConvexSpace([hs -> section(hs, as) for hs in cs.hs])
+section(cs::ConvexPoly, as::AffineSpace) = ConvexPoly([hs -> section(hs, as) for hs in cs.hs])
 
 import Base.union
-inter(chs1::NefSpace, chs2::NefSpace) = CompositeNefSpace(true,  chs1, chs2)
-union(chs1::NefSpace, chs2::NefSpace) = CompositeNefSpace(false, chs1, chs2)
+inter(chs1::NefPoly, chs2::NefPoly) = CompositeNefPoly(true,  chs1, chs2)
+union(chs1::NefPoly, chs2::NefPoly) = CompositeNefPoly(false, chs1, chs2)
 
 # inverting half spaces
 import Base.-
 -(ns::HalfSpace) = HalfSpace(-ns.n,-ns.a,~ns.closed)
--(ns::CompositeNefSpace) = CompositeNefSpace(~ns.oper, -ns.s1, -ns.s2)
-# - for ConvexSpace does not return a convex space.
+-(ns::CompositeNefPoly) = CompositeNefPoly(~ns.oper, -ns.s1, -ns.s2)
+# - for ConvexPoly does not return a convex space.
