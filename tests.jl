@@ -1,4 +1,5 @@
 using AffineSpaces
+using FixedSizeArrays
 using Base.Test 
 
 # distance between two points
@@ -6,8 +7,8 @@ using Base.Test
 # a point x_0 would be given by I*x = x_0
 x1 = randn(4)
 x2 = randn(4)
-pt1 = AffineSpace(eye(4),x1)
-pt2 = AffineSpace(eye(4),x2)
+pt1 = Point(x1)
+pt2 = Point(x2)
 @test_approx_eq dist_affine(pt1, pt2) sqrt(dot(x1-x2,x1-x2))
 
 # distance between point and line in 2D
@@ -15,7 +16,7 @@ pt2 = AffineSpace(eye(4),x2)
 # represented as ([-1, 1]')*[x, y] = 0
 ln = AffineSpace([-1.0, 1.0]',[0.0])
 # and a point [1, 0].
-pt = AffineSpace(eye(2),[1.0,0.0])
+pt = Point([1.0,0.0])
 # The distance should be sqrt(2)/2
 @test_approx_eq dist_affine(ln, pt) (sqrt(2)/2)
 
@@ -26,7 +27,7 @@ pt = AffineSpace(eye(2),[1.0,0.0])
 A = [1.0 0.0 0.0
      0.0 1.0 0.0]
 ln = AffineSpace(A, zeros(2))
-pt = AffineSpace(eye(3),[1.0,0.0,0.0])
+pt = Point([1.0,0.0,0.0])
 @test_approx_eq dist_affine(ln, pt) 1.0
 
 # distance between line and plane incident on it  
@@ -43,9 +44,9 @@ pln = AffineSpace([0.0,0.0,1.0]',[2.0])
 
 # generate three points randomly on xy plane
 # and construct common space (should be xy plane itself)
-pt1 = AffineSpace(eye(3),vcat(randn(2),[0.0]))
-pt2 = AffineSpace(eye(3),vcat(randn(2),[0.0]))
-pt3 = AffineSpace(eye(3),vcat(randn(2),[0.0]))
+pt1 = Point(vcat(randn(2),[0.0]))
+pt2 = Point(vcat(randn(2),[0.0]))
+pt3 = Point(vcat(randn(2),[0.0]))
 pln = generated_space(generated_space(pt1,pt2),pt3)
 @test_approx_eq pln.L Vec([0.0,0.0,1.0])
 @test_approx_eq pln.b Vec([0.0])
@@ -55,7 +56,7 @@ pln = generated_space(generated_space(pt1,pt2),pt3)
 A = [1.0 0.0 0.0
      0.0 1.0 0.0]
 ln = AffineSpace(A, zeros(2))  # [x,y]=[0,0]
-pt = AffineSpace(eye(3),[1.0,1.0,0.0]) # x=y=1
+pt = Point([1.0,1.0,0.0]) # x=y=1
 pln = generated_space(pt, ln) # plane x=y
 @test_approx_eq pln.L[1] -pln.L[2]
 @test_approx_eq pln.L[3] 0.0

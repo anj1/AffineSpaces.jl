@@ -2,7 +2,7 @@
 
 # n-dimensional point.
 typealias Point{T,N} AffineSpace{T,N,N}
-AffineSpace{T,N}(x0::Vec{N,T}) = AffineSpace(Mat(eye(N)), x0)
+AffineSpace{T}(x0::Array{T}) = AffineSpace(Mat(eye(T,length(x0))), Vec(x0))
 
 # line in 2 dimensions, given by starting point and vector
 function Line2D{T}(p0::Point{T,2}, v::Vec{2,T})

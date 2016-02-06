@@ -1,7 +1,7 @@
 #vec_space_union(V,W)   = nullspace(hcat(nullspace(V),nullspace(W))')
 #vec_space_union(V,W,U) = nullspace(hcat(nullspace(V),nullspace(W),nullspace(U))')
 
-# vector that 'connects' the space Ax=a to Bx=b
+# vector from a point in Ax=a to a point in Bx=b
 spanning_vec(A,a,B,b) = pinv(A)*a - pinv(B)*b
 
 # distance between two affine spaces

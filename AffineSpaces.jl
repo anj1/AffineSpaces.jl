@@ -16,7 +16,7 @@ end
 
 AffineSpace(L::Array,b::Vector) = AffineSpace(Mat(L),Vec(b))
 
-include("nefspaces.jl")
+include("nefpoly.jl")
 include("aliases.jl")
 include("util.jl")
 
