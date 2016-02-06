@@ -50,4 +50,14 @@ pln = generated_space(generated_space(pt1,pt2),pt3)
 @test_approx_eq pln.L Vec([0.0,0.0,1.0])
 @test_approx_eq pln.b Vec([0.0])
 
+# construct plane that passes through a line in 3d
+# and a point in 3d
+A = [1.0 0.0 0.0
+     0.0 1.0 0.0]  
+ln = AffineSpace(A, zeros(2))  # [x,y]=[0,0]
+pt = AffineSpace(eye(3),[1.0,1.0,0.0]) # x=y=1
+pln = generated_space(pt, ln) # plane x=y
+@test_approx_eq pln.L[1] -pln.L[2]
+@test_approx_eq pln.L[3] 0.0
+
 println("All tests passed.")
