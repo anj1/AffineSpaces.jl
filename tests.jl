@@ -61,4 +61,17 @@ pln = generated_space(pt, ln) # plane x=y
 @test_approx_eq pln.L[1] -pln.L[2]
 @test_approx_eq pln.L[3] 0.0
 
+# confirm that two parallel planes create the same plane
+pln1 = AffineSpace([1.0,0.5,2.0]',[3.0])
+pln2 = AffineSpace([2.0,1.0,4.0]',[6.0])
+pln3 = generated_space(pln1, pln2)
+@assert size(pln3.L)==(1,3)
+
+# TODO: right now there is the problem that 0xN Mats
+# aren't supported.
+# confirm that three random points in 2d generate plane
+# pt1 = Point(vcat(randn(2)))
+# pt2 = Point(vcat(randn(2)))
+# pt3 = Point(vcat(randn(2)))
+# pln = generated_space(generated_space(pt1,pt2),pt3)
 println("All tests passed.")

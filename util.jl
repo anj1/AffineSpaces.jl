@@ -18,7 +18,7 @@ end
 # signed distance between a half-space and a point
 signed_distance{T,N}(hs::HalfSpace{T,N}, p::Point{T,N}) = dot(hs.n, p.b) + hs.a
 
-# find space of least dimension that includes both as1 and as2
+# find space of least dimension that includes both as1 and as2 as subspaces
 function generated_space{T,N}(as1::AffineSpace{T,N}, as2::AffineSpace{T,N})
 	A,a = convert(Array,as1.L),convert(Vector,as1.b)
 	B,b = convert(Array,as2.L),convert(Vector,as2.b)
