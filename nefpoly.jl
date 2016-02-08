@@ -1,4 +1,5 @@
-using Convex
+using Convex, SCS
+set_default_solver(SCSSolver(verbose=0))
 
 abstract NefPoly{T,N}
 
@@ -8,6 +9,8 @@ immutable HalfSpace{T,N} <: NefPoly{T,N}
 	a::T         # offset
 	closed::Bool # is the set closed or not
 end
+HalfSpace(n::Vector,a,c) = HalfSpace(Vec(n),a,c)
+
 
 # A convex space is an intersection of a set of half-spaces,
 # and is a kind of Nef space.
@@ -63,7 +66,7 @@ function is_redundant{T,N}(ply::ConvexPoly{T,N},h::HalfSpace{T,N})
 	end
 	# solve linear program
 	x = Variable(N)
-	nrml = convert(Array, h.n)
+	nrml = convert(Array, h.n)'
 	prblm = minimize(nrml*x - h.a, [A*x > a])
 	solve!(prblm)
 	# decide whether half-space is redundant or not
