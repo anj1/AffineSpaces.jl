@@ -5,12 +5,13 @@ abstract NefPoly{T,N}
 
 # all x where n.x > a (or >= a if closed=true)
 immutable HalfSpace{T,N} <: NefPoly{T,N}
-	n::Vec{N,T}  # normal
+	n::Vector{T}  # normal
 	a::T         # offset
 	closed::Bool # is the set closed or not
 end
-HalfSpace(n::Vector,a,c) = HalfSpace(Vec(n),a,c)
 
+# signed distance between a half-space and a point
+signed_distance{T,N}(hs::HalfSpace{T,N}, x0::Vector{T}) = dot(hs.n, x0) + hs.a
 
 # A convex space is an intersection of a set of half-spaces,
 # and is a kind of Nef space.
@@ -26,16 +27,9 @@ type CompositeNefPoly{T,N} <: NefPoly{T,N}
 	s2::NefPoly{T,N}
 end
 
-function section{T,N,M}(hs::HalfSpace{T,N}, as::AffineSpace{T,N,M})
-	n = convert(Matrix, as.L)
-	b = convert(Vector, as.b)
-	m = convert(Vector, hs.n)
-
-	mp = hcat(nullspace(n),n') \ m
-	newn = convert(Vec, mp[1:(end-M)])
-	HalfSpace(newn, dot(mp[(end-M+1):end],b) - hs.a, hs.closed)
+function section{T,N}(hs::HalfSpace{T,N}, as::AffineSpace{T,N})
+	HalfSpace(hs.n'*as.v.basis, hs.a - dot(hs.n,as.x0))
 end
-
 
 function section(ply::CompositeNefPoly, as::AffineSpace)
 	CompositeNefPoly(ply.oper,

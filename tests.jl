@@ -7,8 +7,8 @@ using Base.Test
 # a point x_0 would be given by I*x = x_0
 x1 = randn(4)
 x2 = randn(4)
-pt1 = Point(x1)
-pt2 = Point(x2)
+pt1 = point(x1)
+pt2 = point(x2)
 @test_approx_eq dist_affine(pt1, pt2) sqrt(dot(x1-x2,x1-x2))
 
 # distance between point and line in 2D
@@ -16,7 +16,7 @@ pt2 = Point(x2)
 # represented as ([-1, 1]')*[x, y] = 0
 ln = AffineSpace([-1.0, 1.0]',[0.0])
 # and a point [1, 0].
-pt = Point([1.0,0.0])
+pt = point([1.0,0.0])
 # The distance should be sqrt(2)/2
 @test_approx_eq dist_affine(ln, pt) (sqrt(2)/2)
 
@@ -27,7 +27,7 @@ pt = Point([1.0,0.0])
 A = [1.0 0.0 0.0
      0.0 1.0 0.0]
 ln = AffineSpace(A, zeros(2))
-pt = Point([1.0,0.0,0.0])
+pt = point([1.0,0.0,0.0])
 @test_approx_eq dist_affine(ln, pt) 1.0
 
 # distance between line and plane incident on it  
@@ -39,51 +39,55 @@ pln = AffineSpace([0.0,0.0,1.0]',[2.0])
 @test_approx_eq dist_affine(ln, pln) 0.0
 
 # TODO:
-# preset spaces line Point, Line, Plane, etc.
+# preset spaces line point, Line, Plane, etc.
 # that initialize AffineSpace
 
 # generate three points randomly on xy plane
 # and construct common space (should be xy plane itself)
-pt1 = Point(vcat(randn(2),[0.0]))
-pt2 = Point(vcat(randn(2),[0.0]))
-pt3 = Point(vcat(randn(2),[0.0]))
+pt1 = point(vcat(randn(2),[0.0]))
+pt2 = point(vcat(randn(2),[0.0]))
+pt3 = point(vcat(randn(2),[0.0]))
 pln = generated_space(generated_space(pt1,pt2),pt3)
-@test_approx_eq pln.L Vec([0.0,0.0,1.0])
-@test_approx_eq pln.b Vec([0.0])
+plnz = AffineSpace([0.0,0.0,1.0]',[0.0])
+@test_approx_eq pln.v.basis plnz.v.basis
+@assert abs(dist_affine(pln, plnz)) < 1e-15
 
 # construct plane that passes through a line in 3d
 # and a point in 3d
 A = [1.0 0.0 0.0
      0.0 1.0 0.0]
 ln = AffineSpace(A, zeros(2))  # [x,y]=[0,0]
-pt = Point([1.0,1.0,0.0]) # x=y=1
+pt = point([1.0,1.0,0.0]) # x=y=1
 pln = generated_space(pt, ln) # plane x=y
-@test_approx_eq pln.L[1] -pln.L[2]
-@test_approx_eq pln.L[3] 0.0
+plnxy = AffineSpace([1.0,-1.0,0.0]',[0.0])
+@test_approx_eq pln.v.basis plnxy.v.basis
+@assert abs(dist_affine(pln, plnxy)) < 1e-15
 
 # confirm that two parallel planes create the same plane
-pln1 = AffineSpace([1.0,0.5,2.0]',[3.0])
-pln2 = AffineSpace([2.0,1.0,4.0]',[6.0])
-pln3 = generated_space(pln1, pln2)
-@assert size(pln3.L)==(1,3)
+# NOTE: this test is now redundant
+# pln1 = AffineSpace([1.0,0.5,2.0]',[3.0])
+# pln2 = AffineSpace([2.0,1.0,4.0]',[6.0])
+# pln3 = generated_space(pln1, pln2)
+# @assert size(pln3.L)==(1,3)
 
 # TODO: right now there is the problem that 0xN Mats
 # aren't supported.
 # confirm that three random points in 2d generate plane
-# pt1 = Point(vcat(randn(2)))
-# pt2 = Point(vcat(randn(2)))
-# pt3 = Point(vcat(randn(2)))
-# pln = generated_space(generated_space(pt1,pt2),pt3)
+pt1 = point(vcat(randn(2)))
+pt2 = point(vcat(randn(2)))
+pt3 = point(vcat(randn(2)))
+pln = generated_space(generated_space(pt1,pt2),pt3)
+@assert rank(pln)==2
 
 # check is_redundant for unit square
-hs1 = HalfSpace([ 1.0,  0.0],  0.0, true)
-hs2 = HalfSpace([-1.0,  0.0], -1.0, true)
-hs3 = HalfSpace([ 0.0,  1.0],  0.0, true)
-hs4 = HalfSpace([ 0.0, -1.0], -1.0, true)
-hs5 = HalfSpace([-1.0,  0.0], -2.0, true)
-c1 = ConvexPoly([hs1,hs2,hs3])
-@assert is_redundant(c1, hs4)==false
-c2 = ConvexPoly([hs1,hs2,hs3,hs4])
-@assert is_redundant(c2, hs5)==true
+# hs1 = HalfSpace([ 1.0,  0.0],  0.0, true)
+# hs2 = HalfSpace([-1.0,  0.0], -1.0, true)
+# hs3 = HalfSpace([ 0.0,  1.0],  0.0, true)
+# hs4 = HalfSpace([ 0.0, -1.0], -1.0, true)
+# hs5 = HalfSpace([-1.0,  0.0], -2.0, true)
+# c1 = ConvexPoly([hs1,hs2,hs3])
+# @assert is_redundant(c1, hs4)==false
+# c2 = ConvexPoly([hs1,hs2,hs3,hs4])
+# @assert is_redundant(c2, hs5)==true
 
 println("All tests passed.")

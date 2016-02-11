@@ -1,23 +1,40 @@
 module AffineSpaces
 
-using FixedSizeArrays
+export AffineSpace, HalfSpace, ConvexPoly, point, section, inter, union, is_redundant, dist_affine, generated_space
 
-export AffineSpace, HalfSpace, ConvexPoly, Point, Line2D, section, inter, union, is_redundant, dist_affine, generated_space
+include("vectorspace.jl")
 
-# An affine space defined as all x satisfying Tx = b
-# Here, N is the dimension of the 'parent' or 'embedding' space,
-# M is the number of 'free' dimensions of the affine space
-#  (e.g. N for point, N-1 for line, 1 for hyperplane, etc.)
-# and T is just the base number field.
-immutable AffineSpace{T,N,M}
-	L::Mat{M,N,T}   # transformation (must be part of an orthonormal transformation)
-	b::Vec{M,T}     # offset
+# An affine space defined as:
+# {x + x0 | x in V}
+immutable AffineSpace{T,N}
+	v::VectorSpace{T,N}
+	x0::Vector{T}  # offset
 end
 
-AffineSpace(L::Array,b::Vector) = AffineSpace(Mat(L),Vec(b))
+Base.rank(as::AffineSpace) = rank(as.v)
+
+# generate affine space from equation:
+# Lx=a
+AffineSpace{T}(L::Matrix{T},a::Vector{T}) =
+   AffineSpace(VectorSpace{T,size(L,2)}(nullspace(L)),pinv(L)*a)
+
+point{T}(x0::Vector{T}) =
+   AffineSpace(VectorSpace{T,length(x0)}(Array(T,length(x0),0)),x0)
+
+function dist_affine{T,N}(as1::AffineSpace{T,N},as2::AffineSpace{T,N})
+	v = as1.v ∪ as2.v
+	C = ortho(v).basis
+	norm(C*(C\(as2.x0 - as1.x0)))
+end
+
+function generated_space{T,N}(as1::AffineSpace{T,N}, as2::AffineSpace{T,N})
+	v = VectorSpace{T,N}((as2.x0 - as1.x0)'')
+	w = simplify(v ∪ as1.v ∪ as2.v)
+	AffineSpace(w, as1.x0)
+end
 
 include("nefpoly.jl")
-include("aliases.jl")
-include("util.jl")
+include("convexhull.jl")
+include("voronoi.jl")
 
 end
