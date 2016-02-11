@@ -2,7 +2,7 @@
 #vec_space_union(V,W,U) = nullspace(hcat(nullspace(V),nullspace(W),nullspace(U))')
 
 # vector from a point in Ax=a to a point in Bx=b
-spanning_vec(A,a,B,b) = pinv(A)*a - pinv(B)*b
+spanning_vec(A,a,B,b) = (A\a) - (B\b)
 
 # distance between two affine spaces
 # due to Gross & Trenkler, and DuPre & Kass (1992)
@@ -26,5 +26,5 @@ function generated_space{T,N}(as1::AffineSpace{T,N}, as2::AffineSpace{T,N})
 	v = spanning_vec(A,a,B,b)
 	# combine together v and the solution spaces for Ax=0 and Bx=0
 	C = nullspace(hcat(nullspace(A),nullspace(B),v)')
-	AffineSpace(C',pinv(C)*pinv(A)*a) # calculate proper offset
+	AffineSpace(C', C\(A\a))   # calculate proper offset
 end
