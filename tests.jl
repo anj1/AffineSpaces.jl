@@ -80,14 +80,14 @@ pln = generated_space(generated_space(pt1,pt2),pt3)
 @assert rank(pln)==2
 
 # check is_redundant for unit square
-# hs1 = HalfSpace([ 1.0,  0.0],  0.0, true)
-# hs2 = HalfSpace([-1.0,  0.0], -1.0, true)
-# hs3 = HalfSpace([ 0.0,  1.0],  0.0, true)
-# hs4 = HalfSpace([ 0.0, -1.0], -1.0, true)
-# hs5 = HalfSpace([-1.0,  0.0], -2.0, true)
-# c1 = ConvexPoly([hs1,hs2,hs3])
-# @assert is_redundant(c1, hs4)==false
-# c2 = ConvexPoly([hs1,hs2,hs3,hs4])
-# @assert is_redundant(c2, hs5)==true
+hs1 = HalfSpace{Float64,2}([ 1.0,  0.0],  0.0, true)
+hs2 = HalfSpace{Float64,2}([-1.0,  0.0], -1.0, true)
+hs3 = HalfSpace{Float64,2}([ 0.0,  1.0],  0.0, true)
+hs4 = HalfSpace{Float64,2}([ 0.0, -1.0], -1.0, true)
+hs5 = HalfSpace{Float64,2}([-1.0,  0.0], -2.0, true)
+c1 = ConvexPoly([hs1,hs2,hs3])
+@assert is_redundant(c1, hs4)==false
+c2 = ConvexPoly([hs1,hs2,hs3,hs4])
+@assert is_redundant(c2, hs5)==true
 
 println("All tests passed.")
