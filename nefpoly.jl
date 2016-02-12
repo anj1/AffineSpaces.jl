@@ -37,7 +37,7 @@ function section(ply::CompositeNefPoly, as::AffineSpace)
 	                 intersect(ply.s2, as))
 end
 
-section(ply::ConvexPoly, as::AffineSpace) = ConvexPoly([hs -> section(hs, as) for hs in ply.hs])
+section(ply::ConvexPoly, as::AffineSpace) = ConvexPoly([section(hs, as) for hs in ply.hs])
 
 import Base.union
 inter(ply1::NefPoly, ply2::NefPoly) = CompositeNefPoly(true,  ply1, ply2)

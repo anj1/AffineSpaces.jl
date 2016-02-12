@@ -13,4 +13,4 @@ import Base.∪
 ortho{T,N}(v::VectorSpace{T,N}) =
    VectorSpace{T,N}(nullspace(v.basis'))
 
-simplify{T,N}(v::VectorSpace{T,N}) = ortho(ortho(v))
+simplify(v::VectorSpace) = ortho(ortho(v))

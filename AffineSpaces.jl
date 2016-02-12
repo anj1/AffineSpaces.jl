@@ -32,7 +32,7 @@ end
 
 # Smallest affine space that includes both as1 and as2 as affine subspaces.
 function generated_space{T,N}(as1::AffineSpace{T,N}, as2::AffineSpace{T,N})
-	v = VectorSpace{T,N}((as2.x0 - as1.x0)'')
+	v = VectorSpace{T,N}(reshape(as2.x0 - as1.x0,(N,1)))
 	w = simplify(v ∪ as1.v ∪ as2.v)
 	AffineSpace(w, as1.x0)
 end
