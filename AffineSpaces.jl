@@ -1,6 +1,6 @@
 module AffineSpaces
 
-export AffineSpace, HalfSpace, ConvexPoly, point, section, inter, union, is_redundant, dist_affine, generated_space
+export AffineSpace, VectorSpace, HalfSpace, ConvexPoly, point, section, inter, union, is_redundant, dist_affine, generated_space
 
 include("vectorspace.jl")
 

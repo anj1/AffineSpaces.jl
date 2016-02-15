@@ -28,7 +28,7 @@ type CompositeNefPoly{T,N} <: NefPoly{T,N}
 end
 
 function section{T,N}(hs::HalfSpace{T,N}, as::AffineSpace{T,N})
-	HalfSpace(hs.n'*as.v.basis, hs.a - dot(hs.n,as.x0))
+	HalfSpace{T,rank(as)}(vec(hs.n'*as.v.basis), hs.a - dot(hs.n,as.x0), hs.closed)
 end
 
 function section(ply::CompositeNefPoly, as::AffineSpace)
