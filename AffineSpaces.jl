@@ -37,6 +37,10 @@ function generated_space{T,N}(as1::AffineSpace{T,N}, as2::AffineSpace{T,N})
 	AffineSpace(w, as1.x0)
 end
 
+# An abstract representation of a polyhedron in the N-dimensional
+# space with underlying number field T
+abstract Poly{T,N}
+
 include("nefpoly.jl")
 include("convexhull.jl")
 include("voronoi.jl")

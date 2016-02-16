@@ -1,7 +1,7 @@
 using Convex, SCS
 set_default_solver(SCSSolver(verbose=0))
 
-abstract NefPoly{T,N}
+abstract NefPoly{T,N} <: Poly{T,N}
 
 # all x where n.x > a (or >= a if closed=true)
 immutable HalfSpace{T,N} <: NefPoly{T,N}
