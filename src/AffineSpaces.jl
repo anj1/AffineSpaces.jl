@@ -42,8 +42,4 @@ end
 abstract Poly{T,N}
 
 include("nefpoly.jl")
-include("faceted.jl")
-include("convexhull.jl")
-include("voronoi.jl")
-
 end
