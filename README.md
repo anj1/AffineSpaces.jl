@@ -1,5 +1,5 @@
 # AffineSpaces.jl
-This library provides a simple, unified, Julian way of dealing with affine spaces. Affine spaces are familiar objects like points, lines, planes, etc., as well as more exotic objects like hyperplanes and so on. Using this library, you can represent and manipulate objects like this easily.
+This library provides a simple, general way of dealing with affine spaces, and it's implemented entirely in Julia. Affine spaces are familiar objects like points, lines, planes, etc., as well as more exotic objects like hyperplanes and so on. Using this library, you can represent and manipulate objects like this easily.
 
 ### What is it good for?
 Often, in programming, we want to do things like calculate plane-line intersections, or plane-plane intersections, or find the plane that passes through a line and a point, or lots of other things. There are countless Q&As on stackoverflow dealing with each of these special cases. But unforunately the code is usually very specific and not generalizable. It's also not guaranteed to work for all special cases (if planes are parallel, for example) and might be numerically unstable. For example, the intersection of three planes (in 3d) might return a point, a line, a plane, or nothing at all!
