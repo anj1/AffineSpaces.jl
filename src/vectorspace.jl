@@ -1,5 +1,6 @@
 immutable VectorSpace{T,N}
 	basis::Matrix{T}
+	VectorSpace{T,N}(b::Array{T,N}) = new{T,N}(b)
 end
 
 Base.rank(v::VectorSpace) = rank(v.basis)
