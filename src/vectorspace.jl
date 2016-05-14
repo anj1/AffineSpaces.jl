@@ -1,6 +1,9 @@
 immutable VectorSpace{T,N}
 	basis::Matrix{T}
-	VectorSpace{T,N}(b::Array{T,N}) = new{T,N}(b)
+end
+
+function VectorSpace{T}(b::Array{T,2})
+	VectorSpace{T,size(b,1)}(b)
 end
 
 Base.rank(v::VectorSpace) = rank(v.basis)
