@@ -33,6 +33,7 @@ as = AffineSpace(v,[0.0,1.0])
 You can show that with this simple formalism, any kind of point, line, plane, hyperplane, etc. can be represented.
 
 ### Operations
+#### Distance
 
 In AffineSpaces.jl, there are no special cases. All affine subspace operations can be done between any two affine spaces. The distance between two affine spaces, for example, can be calculated easily:
 ```julia
@@ -41,6 +42,7 @@ dist_affine(affinesubspace1, affinesubspace2)
 
 And this works no matter what the two affine subspaces are or even if they are the same dimension. You can use it to calculate, for example, the distance between two points, a plane and a point, or two parallel planes. The only restriction is that the two subspaces inhabit the same space i.e. they both inhabit 2d or 3d space. But that's it. If the two affine subspaces intersect, the distance returned will simply be zero.
 
+#### Generated subspaces
 `generated_space` is the function that takes two affine subspaces and produces the *smallest* affine subspace that *includes* both. So for instance, we can calculate the line that passes through two points:
 ```julia
 line = generated_space(point1, point2)
@@ -54,3 +56,7 @@ plane = generated_space(line, point3)
 ```
 
 Again, if the point lies on the line, it will just return the line. If `line` isn't a line, as we think, but is instead a point (for example, if it was returned from a previous operation), then it will return the line that goes through both points. In this way, in AffineSpaces.jl you don't have to worry about what your geometric objects are and you don't need to worry about writing special case code for them. Everything 'just works'.
+
+#### Intersections
+
+There are many more functions in AffineSpaces.jl, dealing with half-spaces, polyhedra, and so on. Look at test/ and src/ for the various functions that are available.
