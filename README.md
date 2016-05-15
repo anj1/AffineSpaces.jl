@@ -59,4 +59,10 @@ Again, if the point lies on the line, it will just return the line. If `line` is
 
 #### Intersections
 
+The following function can be used to calculate affine subspace intersections. The intersection is the largest affine subspace that is included in both.
+
+```julia
+intersect(affinesubspace1, affinesubspace2)
+```
+
 There are many more functions in AffineSpaces.jl, dealing with half-spaces, polyhedra, and so on. Look at test/ and src/ for the various functions that are available.

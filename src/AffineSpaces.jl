@@ -37,6 +37,15 @@ function generated_space{T,N}(as1::AffineSpace{T,N}, as2::AffineSpace{T,N})
 	AffineSpace(w, as1.x0)
 end
 
+import Base.intersect
+function intersect{T,N}(as1::AffineSpace{T,N}, as2::AffineSpace{T,N})
+	vp1 = ortho(as1.v)
+	vp2 = ortho(as2.v)
+	vu = vp1 ∪ vp2
+	x0 = vu.basis \ vcat(vp1.basis\as1.x0,vp2.basis\as2.x0)
+	AffineSpace(ortho(vu), x0)
+end
+
 # An abstract representation of a polyhedron in the N-dimensional
 # space with underlying number field T
 abstract Poly{T,N}
