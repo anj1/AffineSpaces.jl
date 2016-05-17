@@ -25,7 +25,7 @@ Affine subspaces are simply vector spaces plus some offset. The vector spaces we
 
 ```julia
 # first define the vector space as the y axis (passing through the origin).
-v = VectorSpace([0.0 1.0]')
+v = VectorSpace([1.0 0.0]')
 # now offset it by 1.
 as = AffineSpace(v,[0.0,1.0])
 ```
