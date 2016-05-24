@@ -64,5 +64,37 @@ The following function can be used to calculate affine subspace intersections. T
 ```julia
 intersect(affinesubspace1, affinesubspace2)
 ```
+### Solid Geometry
+AffineSpaces.jl contains a set of functions for performing *solid geometry* - the geometry of volumes including n-dimensional polyhedra.
 
-There are many more functions in AffineSpaces.jl, dealing with half-spaces, polyhedra, and so on. Look at test/ and src/ for the various functions that are available.
+#### Half-spaces
+The simplest volume is the entire R<sup>n</sup> space. We can represent this space using basis vectors, as mentioned. However, R<sup>n</sup> by itself is not that interesting. It becomes more interesting when we introduce the notion of *half-spaces*. Half-spaces are produced when we take an n-dimensional space and divide it into parts using a *hyperplane* (an affine subspace of dimension n-1). For example, we can divide the 2D plane into two parts with a line, or a 3D space into two parts with a plane. Mathematically, we can represent a half-space of dimension n as follows. Let **a** be a normal vector of dimension n, and *b* be a real number. Then all points **x** in the space that satisfy:
+
+**a**<sup>T</sup>**x** > b
+
+Or, if it's a *closed* half-space:
+
+**a**<sup>T</sup>**x** ≥ b
+
+Together form a half-space. To create a half-space in AffineSpaces.jl, we simply input **a** and *b*, for example here's a 3D half-space:
+
+```julia
+hs = HalfSpace{Float64,3}([0.0,1.0,1.0],5.0,true)
+```
+
+The first parameter is the normal vector, the second parameter is the offset, and the final parameter specifies if the half-space is closed or not.
+
+
+#### Convex polyhedra
+
+Now that we have a notion of half-spaces, we can combine them together via *intersections*, using the function `inter()`. Half-spaces are convex spaces. The intersection of any two convex spaces is also a convex space, so the intersection of any number of half-spaces is also a convex space. Indeed, you can show that *any* convex space/polyhedron can be formed via an intersection of half-spaces. This idea forms the basis of [Nef polyhedron theory](https://en.wikipedia.org/wiki/Nef_polygon), and gives us a simple mathematical formalism for dealing with convex polyhedra.
+
+In addition, if you take an affine subspace of dimension *m* < *n*, and compute its intersection with a convex space of dimension *n*, you get a convex space of dimension *m*. This is very useful for, for example, computing ray-polyhedron intersections for various rendering/physics simulations. In AffineSpaces.jl, the function that performs this intersection is:
+
+```julia
+section(halfspace, affinesubspace)
+```
+
+AffineSpaces.jl provides the functions 
+
+There are many more functions in AffineSpaces.jl. Look at test/ and src/ for the various functions that are available.
