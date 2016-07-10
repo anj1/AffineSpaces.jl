@@ -35,12 +35,25 @@ You can show that with this simple formalism, any kind of point, line, plane, hy
 ### Operations
 #### Distance
 
-In AffineSpaces.jl, there are no special cases. All affine subspace operations can be done between any two affine spaces. The distance between two affine spaces, for example, can be calculated easily:
+In AffineSpaces.jl, all affine subspace operations can be done between any two affine spaces. The distance between two affine spaces, for example, can be calculated easily:
 ```julia
 dist_affine(affinesubspace1, affinesubspace2)
 ```
 
-And this works no matter what the two affine subspaces are or even if they are the same dimension. You can use it to calculate, for example, the distance between two points, a plane and a point, or two parallel planes. The only restriction is that the two subspaces inhabit the same space i.e. they both inhabit 2d or 3d space. But that's it. If the two affine subspaces intersect, the distance returned will simply be zero.
+And this works no matter what the two affine subspaces are. You can use it to calculate, for example, the distance between two points, a plane and a point, or two parallel planes. The only restriction is that the two subspaces inhabit the same space i.e. they both inhabit 2d or 3d space. But that's it. If the two affine subspaces intersect, the distance returned will simply be zero.
+
+The fact that this function is so general is even more interesting when you look at the implementation of the function:
+
+```julia
+function dist_affine{T,N}(as1::AffineSpace{T,N},as2::AffineSpace{T,N})
+	v = as1.v ∪ as2.v
+	C = ortho(v).basis
+	norm(C*(C\(as2.x0 - as1.x0)))
+end
+ortho{T,N}(v::VectorSpace{T,N}) =
+    VectorSpace{T,N}(nullspace(v.basis'))
+```
+This is the power of working with a general affine subspace structure - very general calculations can be performed in a simple way.
 
 #### Generated subspaces
 `generated_space` is the function that takes two affine subspaces and produces the *smallest* affine subspace that *includes* both. So for instance, we can calculate the line that passes through two points:
@@ -65,7 +78,7 @@ The following function can be used to calculate affine subspace intersections. T
 intersect(affinesubspace1, affinesubspace2)
 ```
 ### Solid Geometry
-AffineSpaces.jl contains a set of functions for performing *solid geometry* - the geometry of volumes including n-dimensional polyhedra.
+AffineSpaces.jl contains a set of functions for performing *solid geometry* - the geometry of volumes including n-dimensional polyhedra. These are described below.
 
 #### Half-spaces
 The simplest volume is the entire R<sup>n</sup> space. We can represent this space using basis vectors, as mentioned. However, R<sup>n</sup> by itself is not that interesting. It becomes more interesting when we introduce the notion of *half-spaces*. Half-spaces are produced when we take an n-dimensional space and divide it into parts using a *hyperplane* (an affine subspace of dimension n-1). For example, we can divide the 2D plane into two parts with a line, or a 3D space into two parts with a plane. Mathematically, we can represent a half-space of dimension n as follows. Let **a** be a normal vector of dimension n, and *b* be a real number. Then all points **x** in the space that satisfy:
